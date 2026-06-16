@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catálogo de Flores · Vivero de Montaña</title>
+<meta name="description" content="Geranios, coleos, petunias y más, cultivados en la montaña. Pedí por WhatsApp.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CATÁLOGO DE FLORES — Vivero de Montaña
+   Un solo archivo. Para editar las flores, andá al bloque
+   <script> al final: CONFIG (tu marca + WhatsApp) y FLORES.
+   ============================================================ */
+
+:root{
+  --vivero:#1c4a3a;     /* verde profundo, marca */
+  --hoja:#3f7d5f;       /* verde hoja, acentos */
+  --petalo:#c32a78;     /* magenta flor, acento fuerte */
+  --papel:#f4efe4;      /* fondo papel cálido */
+  --carta:#fbf8f1;      /* fondo de tarjeta */
+  --tierra:#28261f;     /* texto */
+  --tierra-soft:#6f6a59;/* texto suave */
+  --linea:#e3dcc9;      /* línea fina */
+  --wa:#1f8f4e;         /* verde botón pedir */
+  --wa-hover:#176b3b;
+  --sombra:0 1px 2px rgba(40,38,31,.05), 0 8px 24px rgba(40,38,31,.07);
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--papel);
+  color:var(--tierra);
+  font-family:"Hanken Grotesk",system-ui,sans-serif;
+  font-size:16px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+img{display:block;max-width:100%}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+a{color:inherit}
+
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px}
+
+/* ---------- eyebrow / etiquetas ---------- */
+.eyebrow{
+  font-size:.72rem;
+  font-weight:700;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--hoja);
+}
+
+/* ---------- HERO ---------- */
+.hero{
+  position:relative;
+  min-height:78vh;
+  display:flex;
+  align-items:flex-end;
+  color:#fff;
+  overflow:hidden;
+}
+.hero__bg{
+  position:absolute;inset:0;
+  background:url("images/portada.jpg") center 30%/cover no-repeat;
+  transform:scale(1.04);
+}
+.hero__bg::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg, rgba(20,42,33,.25) 0%, rgba(20,42,33,.35) 45%, rgba(18,38,30,.92) 100%);
+}
+.hero__inner{position:relative;z-index:2;width:100%;padding:0 20px 56px}
+.hero__inner .wrap{padding:0}
+.hero .eyebrow{color:#bfe6cf}
+.hero h1{
+  font-family:"Bricolage Grotesque",sans-serif;
+  font-weight:700;
+  font-size:clamp(2.6rem,8vw,5.2rem);
+  line-height:.98;
+  margin:.18em 0 .25em;
+  letter-spacing:-.02em;
+  max-width:14ch;
+  text-wrap:balance;
+}
+.hero p{
+  font-size:clamp(1rem,2.4vw,1.25rem);
+  max-width:44ch;
+  color:#eaf3ec;
+  margin:0 0 1.6em;
+}
+.hero__cta{display:flex;gap:12px;flex-wrap:wrap}
+
+.btn{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:13px 22px;border-radius:999px;
+  font-weight:700;font-size:.98rem;
+  transition:transform .15s ease, background .15s ease;
+  text-decoration:none;
+}
+.btn:active{transform:translateY(1px)}
+.btn--wa{background:var(--wa);color:#fff}
+.btn--wa:hover{background:var(--wa-hover)}
+.btn--ghost{background:rgba(255,255,255,.12);color:#fff;border:1.5px solid rgba(255,255,255,.55)}
+.btn--ghost:hover{background:rgba(255,255,255,.2)}
+.btn svg{width:18px;height:18px;flex:none}
+
+/* ---------- barra de filtros (sticky) ---------- */
+.toolbar{
+  position:sticky;top:0;z-index:40;
+  background:rgba(244,239,228,.92);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--linea);
+}
+.toolbar__inner{
+  display:flex;align-items:center;gap:14px;
+  padding:12px 0;flex-wrap:wrap;
+}
+.chips{display:flex;gap:8px;flex-wrap:wrap;flex:1 1 auto}
+.chip{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 15px;border-radius:999px;
+  border:1.5px solid var(--linea);
+  background:var(--carta);color:var(--tierra);
+  font-weight:600;font-size:.9rem;
+  transition:all .15s ease;
+}
+.chip:hover{border-color:var(--hoja)}
+.chip[aria-pressed="true"]{background:var(--vivero);border-color:var(--vivero);color:#fff}
+.chip__n{
+  font-size:.72rem;opacity:.7;font-weight:700;
+  background:rgba(0,0,0,.06);padding:1px 7px;border-radius:999px;
+}
+.chip[aria-pressed="true"] .chip__n{background:rgba(255,255,255,.2);opacity:1}
+.search{
+  position:relative;flex:0 1 220px;
+}
+.search input{
+  width:100%;padding:9px 14px 9px 38px;
+  border:1.5px solid var(--linea);border-radius:999px;
+  background:var(--carta);font-size:.92rem;color:var(--tierra);
+  font-family:inherit;
+}
+.search input:focus{outline:2px solid var(--hoja);outline-offset:1px;border-color:var(--hoja)}
+.search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--tierra-soft)}
+
+/* ---------- sección catálogo ---------- */
+.catalogo{padding:38px 0 70px}
+.count{color:var(--tierra-soft);font-size:.9rem;margin:0 0 22px}
+.count b{color:var(--tierra)}
+
+.grid{
+  display:grid;gap:22px;
+  grid-template-columns:1fr;
+}
+@media(min-width:560px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:900px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:1200px){.grid{grid-template-columns:repeat(4,1fr)}}
+
+/* ---------- tarjeta = etiqueta de vivero ---------- */
+.card{
+  background:var(--carta);
+  border:1px solid var(--linea);
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:var(--sombra);
+  display:flex;flex-direction:column;
+  text-align:left;width:100%;padding:0;
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.card:hover{transform:translateY(-3px);box-shadow:0 4px 10px rgba(40,38,31,.08),0 18px 40px rgba(40,38,31,.13)}
+.card:focus-visible{outline:3px solid var(--hoja);outline-offset:2px}
+.card__media{position:relative;aspect-ratio:4/5;overflow:hidden;background:#e9e3d4}
+.card__media img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
+.card:hover .card__media img{transform:scale(1.05)}
+.card__cat{
+  position:absolute;top:12px;left:12px;
+  background:rgba(251,248,241,.93);
+  color:var(--vivero);
+  font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  padding:5px 11px;border-radius:999px;
+}
+/* perforación de etiqueta */
+.card__body{padding:16px 16px 18px;position:relative}
+.card__body::before{
+  content:"";position:absolute;top:0;left:16px;right:16px;
+  border-top:1.5px dashed var(--linea);
+}
+.card__name{
+  font-family:"Bricolage Grotesque",sans-serif;
+  font-weight:700;font-size:1.18rem;line-height:1.1;
+  margin:14px 0 4px;letter-spacing:-.01em;
+}
+.card__detail{color:var(--tierra-soft);font-size:.86rem;margin:0 0 12px}
+.facts{display:flex;flex-direction:column;gap:6px;margin:0 0 14px}
+.fact{display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--tierra)}
+.fact svg{width:15px;height:15px;flex:none;color:var(--hoja)}
+.card__foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto}
+.price{font-weight:700;font-size:.98rem;color:var(--vivero)}
+.price small{font-weight:500;color:var(--tierra-soft);font-size:.82rem}
+.card__pedir{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--wa);color:#fff;
+  padding:9px 14px;border-radius:999px;font-weight:700;font-size:.84rem;
+  text-decoration:none;transition:background .15s ease;
+}
+.card__pedir:hover{background:var(--wa-hover)}
+.card__pedir svg{width:15px;height:15px}
+
+.empty{text-align:center;padding:60px 20px;color:var(--tierra-soft)}
+.empty b{display:block;color:var(--tierra);font-size:1.1rem;margin-bottom:4px}
+
+/* ---------- nota de cuidados ---------- */
+.nota{background:var(--vivero);color:#eaf3ec;padding:46px 0}
+.nota h2{font-family:"Bricolage Grotesque",sans-serif;color:#fff;font-size:clamp(1.5rem,4vw,2rem);margin:.2em 0 .6em}
+.nota .eyebrow{color:#9fd3b3}
+.nota__grid{display:grid;gap:18px;grid-template-columns:1fr;margin-top:26px}
+@media(min-width:700px){.nota__grid{grid-template-columns:repeat(3,1fr)}}
+.nota__card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:18px}
+.nota__card h3{font-family:"Bricolage Grotesque",sans-serif;font-size:1.05rem;margin:0 0 6px;color:#fff}
+.nota__card p{font-size:.88rem;color:#cfe4d6;margin:0}
+.disclaimer{margin-top:26px;font-size:.84rem;color:#bcd6c4;max-width:60ch}
+
+/* ---------- footer ---------- */
+footer{background:#13261e;color:#bcd6c4;padding:40px 0;text-align:center}
+footer h3{font-family:"Bricolage Grotesque",sans-serif;color:#fff;font-size:1.4rem;margin:0 0 6px}
+footer p{margin:4px 0;font-size:.9rem}
+footer .btn--wa{margin-top:16px}
+.credit{margin-top:22px;font-size:.76rem;color:#5e7d6b}
+
+/* ---------- modal detalle ---------- */
+.modal{
+  position:fixed;inset:0;z-index:100;
+  display:none;align-items:center;justify-content:center;
+  background:rgba(19,38,30,.62);backdrop-filter:blur(4px);
+  padding:18px;
+}
+.modal[open]{display:flex}
+.modal__box{
+  background:var(--carta);border-radius:18px;overflow:hidden;
+  max-width:880px;width:100%;max-height:92vh;overflow-y:auto;
+  display:grid;grid-template-columns:1fr;
+  box-shadow:0 30px 80px rgba(0,0,0,.4);
+}
+@media(min-width:720px){.modal__box{grid-template-columns:1.1fr 1fr}}
+.modal__media{background:#e9e3d4;min-height:240px}
+.modal__media img{width:100%;height:100%;object-fit:cover;max-height:92vh}
+.modal__info{padding:26px 26px 30px;position:relative}
+.modal__close{
+  position:absolute;top:14px;right:14px;
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(40,38,31,.08);color:var(--tierra);
+  font-size:1.3rem;line-height:1;display:flex;align-items:center;justify-content:center;
+}
+.modal__close:hover{background:rgba(40,38,31,.16)}
+.modal__cat{color:var(--hoja)}
+.modal__name{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:1.8rem;line-height:1.05;margin:.25em 0 .15em}
+.modal__detail{color:var(--tierra-soft);margin:0 0 18px}
+.modal__facts{display:flex;flex-direction:column;gap:11px;margin:0 0 22px;padding:18px 0;border-top:1px solid var(--linea);border-bottom:1px solid var(--linea)}
+.modal__fact{display:flex;gap:11px;align-items:flex-start;font-size:.92rem}
+.modal__fact svg{width:18px;height:18px;flex:none;color:var(--hoja);margin-top:2px}
+.modal__fact b{display:block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--tierra-soft);font-weight:700}
+.modal__price{font-weight:700;font-size:1.2rem;color:var(--vivero);margin:0 0 16px}
+.modal__price small{font-weight:500;color:var(--tierra-soft);font-size:.9rem}
+.modal .btn--wa{width:100%;justify-content:center}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .hero__bg{transform:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== HERO ===================== -->
+<header class="hero">
+  <div class="hero__bg" role="img" aria-label="Estante con flores y plantas del vivero"></div>
+  <div class="hero__inner">
+    <div class="wrap">
+      <span class="eyebrow" id="hero-eyebrow">Vivero de montaña · Costa Rica</span>
+      <h1 id="hero-marca">Flores de Montaña</h1>
+      <p id="hero-lema">Geranios, coleos, petunias y más, cultivados a mano en la montaña. Mirá el catálogo y pedí lo que te guste por WhatsApp.</p>
+      <div class="hero__cta">
+        <a class="btn btn--wa" id="hero-wa" href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm0 18.15h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.11.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.24-8.23 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.69 8.23-8.23 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.51.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.22.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28z"/></svg>
+          Escribir por WhatsApp
+        </a>
+        <a class="btn btn--ghost" href="#catalogo">Ver el catálogo</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== FILTROS ===================== -->
+<nav class="toolbar" aria-label="Filtrar flores">
+  <div class="wrap toolbar__inner">
+    <div class="chips" id="chips" role="group" aria-label="Categorías"></div>
+    <label class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="search" id="buscar" placeholder="Buscar flor..." aria-label="Buscar por nombre">
+    </label>
+  </div>
+</nav>
+
+<!-- ===================== CATÁLOGO ===================== -->
+<main class="catalogo" id="catalogo">
+  <div class="wrap">
+    <p class="count" id="count"></p>
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="empty" style="display:none">
+      <b>No hay flores en esa búsqueda</b>
+      Probá con otra categoría o borrá el texto.
+    </div>
+  </div>
+</main>
+
+<!-- ===================== CUIDADOS ===================== -->
+<section class="nota">
+  <div class="wrap">
+    <span class="eyebrow">Cómo cuidarlas</span>
+    <h2>Guía rápida por tipo de planta</h2>
+    <div class="nota__grid" id="cuidados-grid"></div>
+    <p class="disclaimer">Los datos de cuidado y duración son una guía general. La disponibilidad y el precio se confirman por WhatsApp directamente con el vivero.</p>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="wrap">
+    <h3 id="foot-marca">Flores de Montaña</h3>
+    <p id="foot-ubic">Costa Rica</p>
+    <p>Hacé tu pedido y coordinamos entrega o retiro.</p>
+    <a class="btn btn--wa" id="foot-wa" href="#" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm0 18.15h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.11.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.24-8.23 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.69 8.23-8.23 8.23z"/></svg>
+      Escribir por WhatsApp
+    </a>
+    <p class="credit">Catálogo hecho con 🌱 · Actualizado <span id="fecha"></span></p>
+  </div>
+</footer>
+
+<!-- ===================== MODAL DETALLE ===================== -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-name">
+  <div class="modal__box">
+    <div class="modal__media"><img id="modal-img" src="" alt=""></div>
+    <div class="modal__info">
+      <button class="modal__close" id="modal-close" aria-label="Cerrar">&times;</button>
+      <span class="eyebrow modal__cat" id="modal-cat"></span>
+      <h2 class="modal__name" id="modal-name"></h2>
+      <p class="modal__detail" id="modal-detail"></p>
+      <div class="modal__facts" id="modal-facts"></div>
+      <p class="modal__price" id="modal-price"></p>
+      <a class="btn btn--wa" id="modal-wa" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm0 18.15h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.11.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.24-8.23 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.69 8.23-8.23 8.23z"/></svg>
+        Pedir esta flor
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   1) CONFIGURACIÓN  — editá esto
+   ============================================================ */
+const CONFIG = {
+  marca:     "Flores de Montaña",            // nombre del negocio
+  lema:      "Geranios, coleos, petunias y más, cultivados a mano en la montaña. Mirá el catálogo y pedí lo que te guste por WhatsApp.",
+  whatsapp:  "50600000000",                  // <-- NÚMERO REAL: 506 + 8 dígitos, sin + ni espacios
+  ubicacion: "Costa Rica",
+};
+
+/* ============================================================
+   2) CUIDADOS GENERALES POR CATEGORÍA
+      (guía general — que la vendedora confirme)
+   ============================================================ */
+const CUIDADOS = {
+  Geranios: {
+    luz:"Sol pleno a media sombra (sol de la mañana)",
+    riego:"Moderado. Dejá secar la capa de arriba; no encharcar",
+    duracion:"Perenne. Florece gran parte del año en clima fresco",
+    nota:"Muy resistente y fácil. Hojas aromáticas. Ideal para macetas y jardineras."
+  },
+  Coleos: {
+    luz:"Media sombra o luz filtrada (el sol fuerte quema el color)",
+    riego:"Mantener el sustrato húmedo, sin encharcar",
+    duracion:"Follaje vistoso todo el año; crece rápido",
+    nota:"Se reproduce fácil por esqueje en agua. Pellizcá las puntas para que ramifique."
+  },
+  Petunias: {
+    luz:"Sol pleno, mínimo 5–6 horas",
+    riego:"Frecuente en temporada cálida; no mojar las flores",
+    duracion:"Floración abundante de temporada",
+    nota:"Excelente para canastas colgantes. Quitá las flores marchitas para que siga floreciendo."
+  },
+  Torenias: {
+    luz:"Media sombra a sombra; poco sol directo",
+    riego:"Mantener húmedo",
+    duracion:"Florece en la temporada cálida y lluviosa",
+    nota:"Ideal donde el geranio no da por falta de sol. Buena para colgantes."
+  },
+  Begonias: {
+    luz:"Media sombra, luz indirecta",
+    riego:"Moderado, sustrato húmedo bien drenado; no encharcar",
+    duracion:"Floración larga",
+    nota:"Sensible al exceso de sol y de agua. Buena también para interiores con luz."
+  },
+};
+
+/* ============================================================
+   3) LAS FLORES  — agregá / quitá / editá libremente
+      Para una flor nueva copiá un bloque { ... } y cambialo.
+      precio: dejalo "" y aparece "Consultar", o poné "₡2.500"
+   ============================================================ */
+const FLORES = [
+  // ---- GERANIOS ----
+  { nombre:"Geranio Fucsia",  categoria:"Geranios", img:"images/geranio-fucsia.jpg",  detalle:"Floración rosa fucsia intensa", precio:"" },
+  { nombre:"Geranio Vino",    categoria:"Geranios", img:"images/geranio-magenta.jpg", detalle:"Doble, color vino / magenta",     precio:"" },
+  { nombre:"Geranio Rojo",    categoria:"Geranios", img:"images/geranio-rojo.jpg",    detalle:"Rojo clásico, muy florífero",    precio:"" },
+  { nombre:"Geranio Lila",    categoria:"Geranios", img:"images/geranio-lila.jpg",    detalle:"Tonos lila y morado",            precio:"" },
+  { nombre:"Geranio Coral",   categoria:"Geranios", img:"images/geranio-coral.jpg",   detalle:"Coral / salmón, flor doble",     precio:"" },
+  { nombre:"Geranio Rosa",    categoria:"Geranios", img:"images/geranio-rosa.jpg",    detalle:"Rosa pastel suave",              precio:"" },
+
+  // ---- COLEOS (follaje) ----
+  { nombre:"Coleo Verde y Vino",     categoria:"Coleos", img:"images/coleo-verde-vino.jpg",     detalle:"Hoja verde con vetas vino",       precio:"" },
+  { nombre:"Coleo Púrpura",          categoria:"Coleos", img:"images/coleo-purpura.jpg",        detalle:"Púrpura intenso, nervadura rosa",  precio:"" },
+  { nombre:"Coleo Rosa y Verde",     categoria:"Coleos", img:"images/coleo-rosa-verde.jpg",     detalle:"Rosa, verde y púrpura",            precio:"" },
+  { nombre:"Coleo Rosa Bronce",      categoria:"Coleos", img:"images/coleo-rosa-bronce.jpg",    detalle:"Centro rosa, borde bronce",        precio:"" },
+  { nombre:"Coleo Verde y Morado",   categoria:"Coleos", img:"images/coleo-verde-morado.jpg",   detalle:"Mezcla verde y morado",            precio:"" },
+  { nombre:"Coleo Rizado",           categoria:"Coleos", img:"images/coleo-rizado.jpg",         detalle:"Hoja rizada verde-vino",           precio:"" },
+  { nombre:"Coleo Nervadura Roja",   categoria:"Coleos", img:"images/coleo-nervadura-roja.jpg", detalle:"Verde y amarillo, venas rojas",    precio:"" },
+  { nombre:"Coleo Crema",            categoria:"Coleos", img:"images/coleo-crema.jpg",          detalle:"Crema y verde claro",              precio:"" },
+
+  // ---- PETUNIAS ----
+  { nombre:"Petunia Rosa",          categoria:"Petunias", img:"images/petunia-rosa.jpg",         detalle:"Rosa brillante, flor simple", precio:"" },
+  { nombre:"Petunia Doble Fucsia",  categoria:"Petunias", img:"images/petunia-doble-fucsia.jpg", detalle:"Doble, fucsia rizada",        precio:"" },
+  { nombre:"Petunia Doble Blanca",  categoria:"Petunias", img:"images/petunia-doble-blanca.jpg", detalle:"Doble, blanca / crema",       precio:"" },
+
+  // ---- TORENIAS ----
+  { nombre:"Torenia",  categoria:"Torenias", img:"images/torenia.jpg", detalle:"Flor de la suerte, morada y rosa", precio:"" },
+
+  // ---- BEGONIAS ----
+  { nombre:"Begonia Rosa", categoria:"Begonias", img:"images/begonia-rosa.jpg", detalle:"Floración rosa, abundante", precio:"" },
+];
+
+/* ============================================================
+   4) LÓGICA  — normalmente no hace falta tocar de acá para abajo
+   ============================================================ */
+const ICON = {
+  sol:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
+  riego:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2.7s6 6.5 6 10.3a6 6 0 0 1-12 0C6 9.2 12 2.7 12 2.7z"/></svg>',
+  dur:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  nota:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c4-4 8-7.4 8-12a8 8 0 0 0-16 0c0 4.6 4 8 8 12z"/><path d="M9 11s1.5-1 3 0 3 0 3 0"/></svg>',
+};
+const WA_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2z"/></svg>';
+
+const cuidadosDe = f => Object.assign({}, CUIDADOS[f.categoria] || {}, f.cuidados || {});
+const precioTxt  = f => f.precio && f.precio.trim() ? f.precio : 'Consultar';
+
+function waLink(flor){
+  const tel = (CONFIG.whatsapp||"").replace(/[^0-9]/g,"");
+  let msg;
+  if(flor){
+    msg = `Hola! Me interesa la *${flor.nombre}* (${flor.categoria}) que vi en el catálogo. ¿Está disponible y cuánto vale?`;
+  }else{
+    msg = `Hola! Vi el catálogo de ${CONFIG.marca} y quiero hacer una consulta.`;
+  }
+  return `https://wa.me/${tel}?text=${encodeURIComponent(msg)}`;
+}
+
+/* --- estado --- */
+let filtroCat = "Todas";
+let filtroTxt = "";
+
+/* --- render textos de marca --- */
+document.getElementById('hero-marca').textContent = CONFIG.marca;
+document.getElementById('hero-lema').textContent  = CONFIG.lema;
+document.getElementById('hero-eyebrow').textContent = `Vivero · ${CONFIG.ubicacion}`;
+document.getElementById('foot-marca').textContent = CONFIG.marca;
+document.getElementById('foot-ubic').textContent  = CONFIG.ubicacion;
+document.getElementById('hero-wa').href = waLink(null);
+document.getElementById('foot-wa').href = waLink(null);
+document.title = `Catálogo · ${CONFIG.marca}`;
+document.getElementById('fecha').textContent =
+  new Date().toLocaleDateString('es-CR',{month:'long',year:'numeric'});
+
+/* --- chips de categorías --- */
+function categorias(){
+  const orden = ["Todas","Geranios","Coleos","Petunias","Torenias","Begonias"];
+  const presentes = [...new Set(FLORES.map(f=>f.categoria))];
+  return orden.filter(c => c==="Todas" || presentes.includes(c))
+              .concat(presentes.filter(c=>!orden.includes(c)));
+}
+function renderChips(){
+  const cont = document.getElementById('chips');
+  cont.innerHTML = categorias().map(cat=>{
+    const n = cat==="Todas" ? FLORES.length : FLORES.filter(f=>f.categoria===cat).length;
+    return `<button class="chip" data-cat="${cat}" aria-pressed="${cat===filtroCat}">
+      ${cat}<span class="chip__n">${n}</span></button>`;
+  }).join("");
+  cont.querySelectorAll('.chip').forEach(b=>{
+    b.addEventListener('click',()=>{ filtroCat=b.dataset.cat; render(); });
+  });
+}
+
+/* --- grid de tarjetas --- */
+function visibles(){
+  const t = filtroTxt.trim().toLowerCase();
+  return FLORES.filter(f=>{
+    const okCat = filtroCat==="Todas" || f.categoria===filtroCat;
+    const okTxt = !t || (f.nombre+" "+f.categoria+" "+(f.detalle||"")).toLowerCase().includes(t);
+    return okCat && okTxt;
+  });
+}
+function render(){
+  renderChips();
+  const lista = visibles();
+  const grid = document.getElementById('grid');
+  const cnt  = document.getElementById('count');
+  const empty= document.getElementById('empty');
+
+  cnt.innerHTML = `<b>${lista.length}</b> ${lista.length===1?'planta':'plantas'}` +
+    (filtroCat!=="Todas"?` en ${filtroCat}`:"");
+
+  empty.style.display = lista.length? 'none':'block';
+
+  grid.innerHTML = lista.map((f,i)=>{
+    const c = cuidadosDe(f);
+    return `<button class="card" data-i="${FLORES.indexOf(f)}" aria-label="Ver ${f.nombre}">
+      <div class="card__media">
+        <img src="${f.img}" alt="${f.nombre}" loading="lazy">
+        <span class="card__cat">${f.categoria}</span>
+      </div>
+      <div class="card__body">
+        <h3 class="card__name">${f.nombre}</h3>
+        <p class="card__detail">${f.detalle||""}</p>
+        <div class="facts">
+          <span class="fact">${ICON.sol}${c.luz||""}</span>
+          <span class="fact">${ICON.riego}${c.riego||""}</span>
+        </div>
+        <div class="card__foot">
+          <span class="price">${precioTxt(f)}</span>
+          <span class="card__pedir">${WA_SVG} Pedir</span>
+        </div>
+      </div>
+    </button>`;
+  }).join("");
+
+  grid.querySelectorAll('.card').forEach(card=>{
+    card.addEventListener('click',()=> abrirModal(FLORES[+card.dataset.i]));
+  });
+}
+
+/* --- modal --- */
+const modal = document.getElementById('modal');
+function abrirModal(f){
+  const c = cuidadosDe(f);
+  document.getElementById('modal-img').src = f.img;
+  document.getElementById('modal-img').alt = f.nombre;
+  document.getElementById('modal-cat').textContent = f.categoria;
+  document.getElementById('modal-name').textContent = f.nombre;
+  document.getElementById('modal-detail').textContent = f.detalle||"";
+  document.getElementById('modal-price').innerHTML =
+    precioTxt(f)==='Consultar' ? 'Precio: <small>consultar por WhatsApp</small>' : precioTxt(f);
+  document.getElementById('modal-facts').innerHTML = `
+    <div class="modal__fact">${ICON.sol}<div><b>Luz</b>${c.luz||"—"}</div></div>
+    <div class="modal__fact">${ICON.riego}<div><b>Riego</b>${c.riego||"—"}</div></div>
+    <div class="modal__fact">${ICON.dur}<div><b>Duración</b>${c.duracion||"—"}</div></div>
+    <div class="modal__fact">${ICON.nota}<div><b>Tip</b>${c.nota||"—"}</div></div>`;
+  document.getElementById('modal-wa').href = waLink(f);
+  modal.setAttribute('open','');
+  document.body.style.overflow='hidden';
+  document.getElementById('modal-close').focus();
+}
+function cerrarModal(){ modal.removeAttribute('open'); document.body.style.overflow=''; }
+document.getElementById('modal-close').addEventListener('click',cerrarModal);
+modal.addEventListener('click',e=>{ if(e.target===modal) cerrarModal(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&modal.hasAttribute('open')) cerrarModal(); });
+
+/* --- buscador --- */
+document.getElementById('buscar').addEventListener('input',e=>{ filtroTxt=e.target.value; render(); });
+
+/* --- cuidados grid --- */
+function renderCuidados(){
+  const presentes = [...new Set(FLORES.map(f=>f.categoria))];
+  document.getElementById('cuidados-grid').innerHTML = presentes.map(cat=>{
+    const c = CUIDADOS[cat]||{};
+    return `<div class="nota__card">
+      <h3>${cat}</h3>
+      <p><strong>Luz:</strong> ${c.luz||"—"}<br>
+         <strong>Riego:</strong> ${c.riego||"—"}<br>
+         <strong>Duración:</strong> ${c.duracion||"—"}</p>
+    </div>`;
+  }).join("");
+}
+
+/* --- init --- */
+render();
+renderCuidados();
+</script>
+</body>
+</html>
