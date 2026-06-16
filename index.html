@@ -406,6 +406,42 @@ const CUIDADOS = {
     duracion:"Floración larga",
     nota:"Sensible al exceso de sol y de agua. Buena también para interiores con luz."
   },
+  Rosas: {
+    luz:"Sol pleno (al menos 5–6 h)",
+    riego:"Regular y profundo; evitá mojar las hojas",
+    duracion:"Perenne; florece en ciclos durante el año",
+    nota:"Podá las flores marchitas para que rebrote con más fuerza."
+  },
+  Lirios: {
+    luz:"Sol de la mañana o media sombra",
+    riego:"Moderado; el bulbo no debe quedar encharcado",
+    duracion:"Florece por temporada; el bulbo rebrota cada año",
+    nota:"Como flor de corte dura bastante en florero."
+  },
+  Arbustos: {
+    luz:"Sol pleno",
+    riego:"Moderado; resisten bien una vez establecidos",
+    duracion:"Perennes y muy resistentes",
+    nota:"La bugambilia florece más cuando se riega poco."
+  },
+  "Follaje e interior": {
+    luz:"Luz indirecta brillante o media sombra",
+    riego:"Moderado; dejá secar un poco la capa de arriba",
+    duracion:"Follaje vistoso todo el año",
+    nota:"Buenas para interiores con luz. Ojo: la difenbaquia es tóxica si se ingiere, mantenela lejos de niños y mascotas."
+  },
+  "Suculentas y colgantes": {
+    luz:"Luz brillante",
+    riego:"Poco; dejá secar bien entre riegos",
+    duracion:"Perennes, muy fáciles de mantener",
+    nota:"Ideales para canastas colgantes."
+  },
+  "Otras flores": {
+    luz:"Sol a media sombra",
+    riego:"Moderado",
+    duracion:"Floración de temporada",
+    nota:"Consultá disponibilidad por WhatsApp."
+  },
 };
 
 /* ============================================================
@@ -419,8 +455,9 @@ const FLORES = [
   { nombre:"Geranio Vino",    categoria:"Geranios", img:"images/geranio-magenta.jpg", detalle:"Doble, color vino / magenta",     precio:"" },
   { nombre:"Geranio Rojo",    categoria:"Geranios", img:"images/geranio-rojo.jpg",    detalle:"Rojo clásico, muy florífero",    precio:"" },
   { nombre:"Geranio Lila",    categoria:"Geranios", img:"images/geranio-lila.jpg",    detalle:"Tonos lila y morado",            precio:"" },
-  { nombre:"Geranio Coral",   categoria:"Geranios", img:"images/geranio-coral.jpg",   detalle:"Coral / salmón, flor doble",     precio:"" },
+  { nombre:"Geranio Coral",   categoria:"Geranios", img:"images/geranio-coral.jpg",   detalle:"Rosa coral intenso, flor doble",  precio:"" },
   { nombre:"Geranio Rosa",    categoria:"Geranios", img:"images/geranio-rosa.jpg",    detalle:"Rosa pastel suave",              precio:"" },
+  { nombre:"Geranio Rosa Pálido", categoria:"Geranios", img:"images/geranio-rosa-palido.jpg", detalle:"Rosa muy claro, casi blanco", precio:"" },
 
   // ---- COLEOS (follaje) ----
   { nombre:"Coleo Verde y Vino",     categoria:"Coleos", img:"images/coleo-verde-vino.jpg",     detalle:"Hoja verde con vetas vino",       precio:"" },
@@ -439,9 +476,32 @@ const FLORES = [
 
   // ---- TORENIAS ----
   { nombre:"Torenia",  categoria:"Torenias", img:"images/torenia.jpg", detalle:"Flor de la suerte, morada y rosa", precio:"" },
+  { nombre:"Torenia Rosa", categoria:"Torenias", img:"images/torenia-rosa.jpg", detalle:"Flor de la suerte, rosa y blanca", precio:"" },
 
   // ---- BEGONIAS ----
-  { nombre:"Begonia Rosa", categoria:"Begonias", img:"images/begonia-rosa.jpg", detalle:"Floración rosa, abundante", precio:"" },
+  { nombre:"Begonia Rosa", categoria:"Begonias", img:"images/begonia-rosa.jpg", detalle:"Doble, rosa, flor grande", precio:"" },
+
+  // ---- ROSAS ----
+  { nombre:"Rosa Rosada", categoria:"Rosas", img:"images/rosa-rosada.jpg", detalle:"Rosa clásica, color rosado intenso", precio:"" },
+
+  // ---- LIRIOS ----
+  { nombre:"Lirio Blanco", categoria:"Lirios", img:"images/lirio-blanco.jpg", detalle:"Flor grande, blanca", precio:"" },
+
+  // ---- ARBUSTOS DE FLOR ----
+  { nombre:"Bugambilia", categoria:"Arbustos", img:"images/bugambilia.jpg", detalle:"Arbusto de flor, rojo / magenta", precio:"" },
+  { nombre:"Flor de la Princesa", categoria:"Arbustos", img:"images/flor-princesa.jpg", detalle:"Arbusto de flor morada (tibouchina)", precio:"" },
+
+  // ---- FOLLAJE E INTERIOR ----
+  { nombre:"Difenbaquia", categoria:"Follaje e interior", img:"images/difenbaquia.jpg", detalle:"Hoja grande verde y crema", precio:"" },
+  { nombre:"Follaje Rayado", categoria:"Follaje e interior", img:"images/follaje-rayado.jpg", detalle:"Hojas verdes con vetas amarillas", precio:"" },
+
+  // ---- SUCULENTAS Y COLGANTES ----
+  { nombre:"Amor de Hombre", categoria:"Suculentas y colgantes", img:"images/amor-de-hombre.jpg", detalle:"Colgante de hoja morada y plateada", precio:"" },
+  { nombre:"Cola de Burro", categoria:"Suculentas y colgantes", img:"images/cola-de-burro.jpg", detalle:"Suculenta colgante verde", precio:"" },
+
+  // ---- OTRAS FLORES ----
+  { nombre:"Flor Amarilla", categoria:"Otras flores", img:"images/flor-amarilla.jpg", detalle:"Flor amarilla tipo pompón", precio:"" },
+  { nombre:"Flor Blanca", categoria:"Otras flores", img:"images/flor-blanca.jpg", detalle:"Flor blanca de jardín", precio:"" },
 ];
 
 /* ============================================================
@@ -487,7 +547,7 @@ document.getElementById('fecha').textContent =
 
 /* --- chips de categorías --- */
 function categorias(){
-  const orden = ["Todas","Geranios","Coleos","Petunias","Torenias","Begonias"];
+  const orden = ["Todas","Geranios","Rosas","Petunias","Torenias","Begonias","Lirios","Coleos","Follaje e interior","Suculentas y colgantes","Arbustos","Otras flores"];
   const presentes = [...new Set(FLORES.map(f=>f.categoria))];
   return orden.filter(c => c==="Todas" || presentes.includes(c))
               .concat(presentes.filter(c=>!orden.includes(c)));
